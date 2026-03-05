@@ -269,4 +269,14 @@
   // Results list: we can display last winners from localStorage if you want later.
   // For now keep zero.
   resultsCount.textContent = "0";
+  
+})();
+function spinTo(rith) {
+  const index = entries.indexOf(rith);
+  if (index === -1) return;
+
+  const anglePerSlice = 360 / entries.length;
+  const targetAngle = 360 * 5 + (360 - index * anglePerSlice);
+
+  spinWheel(targetAngle);
 })();
