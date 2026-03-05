@@ -169,3 +169,104 @@
 
   setStatus("Ready");
 })();
+// =========================
+// Drawer UI wiring (mobile)
+// =========================
+(() => {
+  const drawerBtn = document.getElementById("drawerBtn");
+  const drawer = document.getElementById("drawer");
+  if (!drawerBtn || !drawer) return; // if you remove drawer, don't crash
+
+  const tabEntries = document.getElementById("tabEntries");
+  const tabResults = document.getElementById("tabResults");
+  const entriesTools = document.getElementById("entriesTools");
+  const entries2 = document.getElementById("entries2");
+  const resultsPanel = document.getElementById("resultsPanel");
+
+  const entriesCount = document.getElementById("entriesCount");
+  const resultsCount = document.getElementById("resultsCount");
+
+  // open/close drawer
+  drawerBtn.addEventListener("click", () => drawer.classList.toggle("open"));
+  document.addEventListener("click", (e) => {
+    if (!drawer.classList.contains("open")) return;
+    const inside = drawer.contains(e.target) || drawerBtn.contains(e.target);
+    if (!inside) drawer.classList.remove("open");
+  });
+
+  function showEntriesTab(){
+    tabEntries.classList.add("active");
+    tabResults.classList.remove("active");
+    entriesTools.style.display = "flex";
+    entries2.style.display = "block";
+    resultsPanel.style.display = "none";
+  }
+  function showResultsTab(){
+    tabResults.classList.add("active");
+    tabEntries.classList.remove("active");
+    entriesTools.style.display = "none";
+    entries2.style.display = "none";
+    resultsPanel.style.display = "block";
+  }
+  tabEntries.addEventListener("click", showEntriesTab);
+  tabResults.addEventListener("click", showResultsTab);
+  showEntriesTab();
+
+  // Sync drawer textarea with your existing textarea (#entries)
+  const entriesMain = document.getElementById("entries");
+  function countLines(val){
+    return val.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).length;
+  }
+  if (entriesMain) {
+    entries2.value = entriesMain.value;
+    entriesCount.textContent = countLines(entries2.value);
+
+    entries2.addEventListener("input", () => {
+      entriesMain.value = entries2.value;
+      entriesCount.textContent = countLines(entries2.value);
+    });
+
+    entriesMain.addEventListener("input", () => {
+      entries2.value = entriesMain.value;
+      entriesCount.textContent = countLines(entries2.value);
+    });
+  }
+
+  // Wire drawer buttons to existing actions if present
+  const shuffleBtn2 = document.getElementById("shuffleBtn2");
+  const sortBtn2 = document.getElementById("sortBtn2");
+  const addImageBtn = document.getElementById("addImageBtn");
+  const addWheelBtn = document.getElementById("addWheelBtn");
+
+  // If you have no shuffle/sort in your main UI yet, we do it right here:
+  function getList(){ return (entriesMain ? entriesMain.value : entries2.value).split(/\r?\n/).map(s=>s.trim()).filter(Boolean); }
+  function setList(arr){
+    const text = arr.join("\n");
+    if (entriesMain) entriesMain.value = text;
+    entries2.value = text;
+    entriesCount.textContent = countLines(text);
+  }
+
+  shuffleBtn2.addEventListener("click", () => {
+    const arr = getList();
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    setList(arr);
+  });
+
+  sortBtn2.addEventListener("click", () => {
+    const arr = getList().sort((a,b)=>a.localeCompare(b));
+    setList(arr);
+  });
+
+  // "Add image" / "Add wheel" are UI only (Wheel of Names features).
+  // We can stub them now so button works (no error).
+  addImageBtn.addEventListener("click", () => alert("Add image (not implemented yet)"));
+  addWheelBtn.addEventListener("click", () => alert("Add wheel (not implemented yet)"));
+
+  // Results list: we can display last winners from localStorage if you want later.
+  // For now keep zero.
+  resultsCount.textContent = "0";
+})();
