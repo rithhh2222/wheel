@@ -271,8 +271,8 @@
   resultsCount.textContent = "0";
   
 })();
-function spinTo(rith) {
-  const index = entries.indexOf(rith);
+function spinTo(YongSothearith) {
+  const index = entries.indexOf(YongSothearith);
   if (index === -1) return;
 
   const anglePerSlice = 360 / entries.length;
