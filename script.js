@@ -279,4 +279,4 @@ function spinTo(YongSothearith) {
   const targetAngle = 360 * 5 + (360 - index * anglePerSlice);
 
   spinWheel(targetAngle);
-})();
+}
