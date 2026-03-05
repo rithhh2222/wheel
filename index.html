@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wheel of Names — Embedded</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.12);
+      --text:#e8ecff;
+      --muted: rgba(232,236,255,.75);
+      --accent:#2f7cf6;
+      --good: rgba(108,248,200,.20);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(11,16,32,.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .bar{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 12px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      font-weight: 900;
+      letter-spacing: .3px;
+    }
+    .dot{ width:10px; height:10px; border-radius:999px; background: var(--accent); }
+
+    .grow{ flex:1; min-width: 220px; }
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+    input[type="text"]{
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      outline: none;
+    }
+
+    button{
+      cursor:pointer;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.10);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      white-space: nowrap;
+    }
+    button.primary{
+      background: var(--accent);
+      border-color: rgba(47,124,246,.8);
+    }
+    button:disabled{ opacity:.55; cursor:not-allowed; }
+
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .toggle{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 12px;
+      user-select:none;
+    }
+    .toggle input{ transform: scale(1.1); }
+
+    main{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px;
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap: 12px;
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      main{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    textarea{
+      width:100%;
+      min-height: 220px;
+      resize: vertical;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      padding: 10px 12px;
+      outline:none;
+      line-height: 1.35;
+    }
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    /* Wheel area */
+    .wheelWrap{
+      display:grid;
+      place-items:center;
+      gap: 10px;
+    }
+
+    /* Keep the wheel square AND fit within the viewport */
+    .frameBox{
+      width: min(92vw, calc(100vh - 190px), 760px);
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.14);
+      background:#fff;
+      position: relative;
+    }
+
+    iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      background:#fff;
+    }
+
+    .fsHelp{
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
+    }
+
+    /* Winner overlay */
+    .backdrop{
+      position: fixed;
+      inset: 0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      background: rgba(0,0,0,.55);
+      z-index: 100;
+    }
+    .modal{
+      width: min(560px, 96vw);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(11,16,32,.95);
+      backdrop-filter: blur(10px);
+      padding: 14px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+    }
+    .modal h2{
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: .2px;
+    }
+    .winner{
+      font-size: 28px;
+      font-weight: 950;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(108,248,200,.28);
+      background: rgba(108,248,200,.10);
+      word-break: break-word;
+    }
+    .modal .actions{ justify-content:flex-end; }
+    .danger{
+      border-color: rgba(225,29,72,.45);
+      background: rgba(225,29,72,.12);
+    }
+
+    /* Presentation mode */
+    .present main{ grid-template-columns: 1fr; }
+    .present #leftPanel{ display:none; }
+
+    /* Pseudo fullscreen fallback (if Fullscreen API blocked) */
+    .pseudoFS{
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      aspect-ratio: auto !important;
+      border-radius: 0 !important;
+      z-index: 90 !important;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand"><span class="dot"></span>Wheel Embed</div>
+
+    <div class="grow">
+      <input id="wheelLink" type="text"
+        placeholder="Paste share link: https://wheelofnames.com/abc-123   (or just abc-123)"
+        autocomplete="off" />
+    </div>
+
+    <div class="row">
+      <button class="primary" id="loadBtn">Load wheel</button>
+      <button id="openTabBtn">Open in tab</button>
+      <button id="fsBtn">Fullscreen</button>
+      <label class="toggle"><input id="presentToggle" type="checkbox">Presentation mode</label>
+      <span class="pill" id="statusPill">Ready</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Left panel (optional controls) -->
+  <section class="card" id="leftPanel">
+    <div class="hint">
+      Optional: control the embedded wheel with the official <code>postMessage</code> commands (spin, setEntries, removeWinner, etc.). :contentReference[oaicite:1]{index=1}
+    </div>
+
+    <div style="margin-top:10px;">
+      <div class="hint">Entries (one per line)</div>
+      <textarea id="entries">Alice
+Bob
+Charlie
+Dara</textarea>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="spinBtn">Spin</button>
+      <button id="setEntriesBtn">Set entries</button>
+      <button id="closeWinnerDialogBtn">Close winner dialog</button>
+      <button class="danger" id="removeWinnerBtn">Remove winner</button>
+      <button class="danger" id="removeWinnerAllBtn">Remove winner (all)</button>
+    </div>
+
+    <div class="actions">
+      <label class="toggle"><input id="lockAfterSpin" type="checkbox">Lock after 1 spin</label>
+    </div>
+
+    <div class="hint" style="margin-top:10px;">
+      Security: we only trust messages where <code>event.origin</code> is <code>https://wheelofnames.com</code>, as they recommend. :contentReference[oaicite:2]{index=2}
+    </div>
+  </section>
+
+  <!-- Wheel panel -->
+  <section class="card wheelWrap">
+    <div class="frameBox" id="frameBox">
+      <iframe
+        id="wheelFrame"
+        referrerpolicy="no-referrer"
+        allow="fullscreen"
+        title="Wheel of Names Embedded"
+      ></iframe>
+    </div>
+
+    <div class="fsHelp">
+      Tip: Fullscreen button uses your browser’s Fullscreen API (Esc to exit).
+    </div>
+
+    <div class="row">
+      <span class="pill">Winner messages are read from <code>event.data.spinResult.text</code>. :contentReference[oaicite:3]{index=3}</span>
+    </div>
+  </section>
+</main>
+
+<!-- Winner overlay -->
+<div class="backdrop" id="backdrop" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h2>Winner</h2>
+    <div class="winner" id="winnerText">—</div>
+    <div class="actions">
+      <button id="modalCloseBtn">Close</button>
+      <button class="danger" id="modalRemoveBtn">Remove</button>
+      <button class="danger" id="modalRemoveAllBtn">Remove all</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const WHEEL_ORIGIN = "https://wheelofnames.com"; // per official embed guidance :contentReference[oaicite:4]{index=4}
+  const LS_KEY = "wheel_embed_last_link_v1";
+
+  const wheelLink = document.getElementById("wheelLink");
+  const loadBtn = document.getElementById("loadBtn");
+  const openTabBtn = document.getElementById("openTabBtn");
+  const fsBtn = document.getElementById("fsBtn");
+  const presentToggle = document.getElementById("presentToggle");
+  const statusPill = document.getElementById("statusPill");
+
+  const frame = document.getElementById("wheelFrame");
+  const frameBox = document.getElementById("frameBox");
+
+  const entriesEl = document.getElementById("entries");
+  const spinBtn = document.getElementById("spinBtn");
+  const setEntriesBtn = document.getElementById("setEntriesBtn");
+  const closeWinnerDialogBtn = document.getElementById("closeWinnerDialogBtn");
+  const removeWinnerBtn = document.getElementById("removeWinnerBtn");
+  const removeWinnerAllBtn = document.getElementById("removeWinnerAllBtn");
+  const lockAfterSpin = document.getElementById("lockAfterSpin");
+
+  const backdrop = document.getElementById("backdrop");
+  const winnerText = document.getElementById("winnerText");
+  const modalCloseBtn = document.getElementById("modalCloseBtn");
+  const modalRemoveBtn = document.getElementById("modalRemoveBtn");
+  const modalRemoveAllBtn = document.getElementById("modalRemoveAllBtn");
+
+  function setStatus(t){ statusPill.textContent = t; }
+
+  function parseEntries(){
+    return entriesEl.value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  }
+
+  function normalizeWheelUrl(input){
+    let v = (input || "").trim();
+    if (!v) return "";
+
+    // Allow user to paste just "abc-123"
+    if (/^[a-z0-9]{3}-[a-z0-9]{3}$/i.test(v)) {
+      v = `${WHEEL_ORIGIN}/${v}`;
+    }
+
+    // If they paste without scheme
+    if (!/^https?:\/\//i.test(v)) v = "https://" + v;
+
+    const u = new URL(v);
+    if (u.hostname !== "wheelofnames.com") {
+      throw new Error("Please use a wheelofnames.com share link.");
+    }
+    u.protocol = "https:";
+    return u.toString();
+  }
+
+  function loadWheel(url){
+    frame.style.pointerEvents = "auto";
+    frame.src = url;
+    localStorage.setItem(LS_KEY, url);
+    setStatus("Loaded");
+  }
+
+  function send(msg){
+    if (!frame.contentWindow) return;
+    // official postMessage usage :contentReference[oaicite:5]{index=5}
+    frame.contentWindow.postMessage(msg, WHEEL_ORIGIN);
+  }
+
+  function showWinner(name){
+    winnerText.textContent = name;
+    backdrop.style.display = "flex";
+  }
+  function closeWinner(){
+    backdrop.style.display = "none";
+  }
+
+  // --- UI events
+  loadBtn.addEventListener("click", () => {
+    try{
+      const url = normalizeWheelUrl(wheelLink.value);
+      if (!url) return setStatus("Paste a share link first");
+      loadWheel(url);
+    }catch(e){
+      alert(e.message || "Invalid link");
+    }
+  });
+
+  openTabBtn.addEventListener("click", () => {
+    try{
+      const url = normalizeWheelUrl(wheelLink.value || frame.src);
+      if (!url) return;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }catch{}
+  });
+
+  presentToggle.addEventListener("change", () => {
+    document.body.classList.toggle("present", presentToggle.checked);
+  });
+
+  // Fullscreen
+  fsBtn.addEventListener("click", async () => {
+    try{
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        return;
+      }
+      if (frameBox.requestFullscreen) {
+        await frameBox.requestFullscreen();
+      } else {
+        // fallback
+        frameBox.classList.toggle("pseudoFS");
+      }
+    }catch{
+      // fallback
+      frameBox.classList.toggle("pseudoFS");
+    }
+  });
+
+  document.addEventListener("fullscreenchange", () => {
+    fsBtn.textContent = document.fullscreenElement ? "Exit fullscreen" : "Fullscreen";
+  });
+
+  // Control buttons (official message names) :contentReference[oaicite:6]{index=6}
+  spinBtn.addEventListener("click", () => { setStatus("Spinning…"); send({ name: "spin" }); });
+  setEntriesBtn.addEventListener("click", () => {
+    const entries = parseEntries();
+    send({ name: "setEntries", entries });
+    setStatus(`Sent ${entries.length} entries`);
+  });
+  closeWinnerDialogBtn.addEventListener("click", () => send({ name: "closeWinnerDialog" }));
+  removeWinnerBtn.addEventListener("click", () => send({ name: "removeWinner" }));
+  removeWinnerAllBtn.addEventListener("click", () => send({ name: "removeWinnerAll" }));
+
+  // Modal buttons (also send to the embedded wheel)
+  modalCloseBtn.addEventListener("click", () => closeWinner());
+  modalRemoveBtn.addEventListener("click", () => send({ name: "removeWinner" }));
+  modalRemoveAllBtn.addEventListener("click", () => send({ name: "removeWinnerAll" }));
+  backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeWinner(); });
+
+  // ESC closes modal
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeWinner(); });
+
+  // Listen for winner result (official example: event.data.spinResult.text) :contentReference[oaicite:7]{index=7}
+  window.addEventListener("message", (event) => {
+    if (event.origin !== WHEEL_ORIGIN) return; // IMPORTANT per FAQ :contentReference[oaicite:8]{index=8}
+
+    const winner = event?.data?.spinResult?.text;
+    if (!winner) return;
+
+    setStatus("Done");
+    showWinner(winner);
+
+    // Option: lock spins after first winner (pointerEvents = none) :contentReference[oaicite:9]{index=9}
+    if (lockAfterSpin.checked) {
+      frame.style.pointerEvents = "none";
+      setStatus("Done (locked)");
+    }
+  });
+
+  // --- Init: load from URL param (?wheel=abc-123 or ?wheel=https%3A%2F%2Fwheelofnames.com%2Fabc-123)
+  const params = new URLSearchParams(location.search);
+  const fromParam = params.get("wheel");
+  const fromStorage = localStorage.getItem(LS_KEY);
+
+  const initial = fromParam || fromStorage || `${WHEEL_ORIGIN}/view?entries=Alice,Bob,Charlie,Dara`;
+  wheelLink.value = initial;
+
+  try{
+    loadWheel(normalizeWheelUrl(initial));
+  }catch{
+    // if somehow invalid, load a safe default
+    loadWheel(`${WHEEL_ORIGIN}/view?entries=Alice,Bob,Charlie,Dara`);
+  }
+
+  setStatus("Ready");
+})();
+</script>
+</body>
+</html>
