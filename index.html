@@ -8,135 +8,134 @@
   <!-- ✅ LINK CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
-  <!-- Mobile Drawer Button -->
-<button id="drawerBtn" class="drawerBtn" aria-label="Open panel">›</button>
-
-<!-- Left Drawer (mobile-style like your screenshot) -->
-<aside id="drawer" class="drawer" aria-label="Wheel panel">
-  <div class="drawerTop">
-    <button class="tab active" id="tabEntries">Entries <span class="badge" id="entriesCount">0</span></button>
-    <button class="tab" id="tabResults">Results <span class="badge" id="resultsCount">0</span></button>
-  </div>
-
-  <div class="drawerBody">
-    <div id="entriesTools" class="tools">
-      <button class="toolBtn" id="shuffleBtn2">🔀 Shuffle</button>
-      <button class="toolBtn" id="sortBtn2">⇅ Sort</button>
-
-      <div class="toolSplit">
-        <button class="toolBtn" id="addImageBtn" type="button">🖼️ Add image</button>
-        <button class="toolDrop" id="addImageDrop" type="button">▾</button>
-      </div>
-
-      <label class="adv">
-        <input type="checkbox" id="advancedToggle" />
-        Advanced
-      </label>
-    </div>
-
-    <textarea id="entries2" class="bigBox" placeholder="Type one entry per line"></textarea>
-
-    <div class="bottomRow">
-      <span class="beta">Beta</span>
-      <div class="toolSplit wide">
-        <button class="toolBtn primary" id="addWheelBtn" type="button">＋ Add wheel</button>
-        <button class="toolDrop primary" id="addWheelDrop" type="button">▾</button>
-      </div>
-    </div>
-
-    <div id="resultsPanel" class="results" style="display:none;"></div>
-  </div>
-</aside>
-
 <body>
-<header>
-  <div class="bar">
-    <div class="brand"><span class="dot"></span>Wheel Embed</div>
+  <!-- Mobile Drawer Button -->
+  <button id="drawerBtn" class="drawerBtn" aria-label="Open panel">›</button>
 
-    <div class="grow">
-      <input id="wheelLink" type="text"
-        placeholder="Paste share link: https://wheelofnames.com/abc-123   (or just abc-123)"
-        autocomplete="off" />
+  <!-- Left Drawer (mobile-style like your screenshot) -->
+  <aside id="drawer" class="drawer" aria-label="Wheel panel">
+    <div class="drawerTop">
+      <button class="tab active" id="tabEntries">Entries <span class="badge" id="entriesCount">0</span></button>
+      <button class="tab" id="tabResults">Results <span class="badge" id="resultsCount">0</span></button>
     </div>
 
-    <div class="row">
-      <button class="primary" id="loadBtn">Load wheel</button>
-      <button id="openTabBtn">Open in tab</button>
-      <button id="fsBtn">Fullscreen</button>
-      <label class="toggle"><input id="presentToggle" type="checkbox">Presentation mode</label>
-      <span class="pill" id="statusPill">Ready</span>
-    </div>
-  </div>
-</header>
+    <div class="drawerBody">
+      <div id="entriesTools" class="tools">
+        <button class="toolBtn" id="shuffleBtn2">🔀 Shuffle</button>
+        <button class="toolBtn" id="sortBtn2">⇅ Sort</button>
 
-<main>
-  <!-- Left panel (optional controls) -->
-  <section class="card" id="leftPanel">
-    <div class="hint">
-      Optional: control the embedded wheel with the official <code>postMessage</code> commands (spin, setEntries, removeWinner, etc.).
-    </div>
+        <div class="toolSplit">
+          <button class="toolBtn" id="addImageBtn" type="button">🖼️ Add image</button>
+          <button class="toolDrop" id="addImageDrop" type="button">▾</button>
+        </div>
 
-    <div style="margin-top:10px;">
-      <div class="hint">Entries (one per line)</div>
-      <textarea id="entries">Alice
+        <label class="adv">
+          <input type="checkbox" id="advancedToggle" />
+          Advanced
+        </label>
+      </div>
+
+      <textarea id="entries2" class="bigBox" placeholder="Type one entry per line"></textarea>
+
+      <div class="bottomRow">
+        <span class="beta">Beta</span>
+        <div class="toolSplit wide">
+          <button class="toolBtn primary" id="addWheelBtn" type="button">＋ Add wheel</button>
+          <button class="toolDrop primary" id="addWheelDrop" type="button">▾</button>
+        </div>
+      </div>
+
+      <div id="resultsPanel" class="results" style="display:none;"></div>
+    </div>
+  </aside>
+
+  <header>
+    <div class="bar">
+      <div class="brand"><span class="dot"></span>Wheel Embed</div>
+
+      <div class="grow">
+        <input id="wheelLink" type="text"
+          placeholder="Paste share link: https://wheelofnames.com/abc-123   (or just abc-123)"
+          autocomplete="off" />
+      </div>
+
+      <div class="row">
+        <button class="primary" id="loadBtn">Load wheel</button>
+        <button id="openTabBtn">Open in tab</button>
+        <button id="fsBtn">Fullscreen</button>
+        <label class="toggle"><input id="presentToggle" type="checkbox">Presentation mode</label>
+        <span class="pill" id="statusPill">Ready</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left panel (optional controls) -->
+    <section class="card" id="leftPanel">
+      <div class="hint">
+        Optional: control the embedded wheel with the official <code>postMessage</code> commands (spin, setEntries, removeWinner, etc.).
+      </div>
+
+      <div style="margin-top:10px;">
+        <div class="hint">Entries (one per line)</div>
+        <textarea id="entries">Alice
 Bob
 Charlie
 Dara</textarea>
-    </div>
+      </div>
 
-    <div class="actions">
-      <button class="primary" id="spinBtn">Spin</button>
-      <button id="setEntriesBtn">Set entries</button>
-      <button id="closeWinnerDialogBtn">Close winner dialog</button>
-      <button class="danger" id="removeWinnerBtn">Remove winner</button>
-      <button class="danger" id="removeWinnerAllBtn">Remove winner (all)</button>
-    </div>
+      <div class="actions">
+        <button class="primary" id="spinBtn">Spin</button>
+        <button id="setEntriesBtn">Set entries</button>
+        <button class="danger" id="closeWinnerDialogBtn">Close winner dialog</button>
+        <button class="danger" id="removeWinnerBtn">Remove winner</button>
+        <button class="danger" id="removeWinnerAllBtn">Remove winner (all)</button>
+      </div>
 
-    <div class="actions">
-      <label class="toggle"><input id="lockAfterSpin" type="checkbox">Lock after 1 spin</label>
-    </div>
+      <div class="actions">
+        <label class="toggle"><input id="lockAfterSpin" type="checkbox">Lock after 1 spin</label>
+      </div>
 
-    <div class="hint" style="margin-top:10px;">
-      Security: we only trust messages where <code>event.origin</code> is <code>https://wheelofnames.com</code>.
-    </div>
-  </section>
+      <div class="hint" style="margin-top:10px;">
+        Security: we only trust messages where <code>event.origin</code> is <code>https://wheelofnames.com</code>.
+      </div>
+    </section>
 
-  <!-- Wheel panel -->
-  <section class="card wheelWrap">
-    <div class="frameBox" id="frameBox">
-      <iframe
-        id="wheelFrame"
-        referrerpolicy="no-referrer"
-        allow="fullscreen"
-        title="Wheel of Names Embedded"
-      ></iframe>
-    </div>
+    <!-- Wheel panel -->
+    <section class="card wheelWrap">
+      <div class="frameBox" id="frameBox">
+        <iframe
+          id="wheelFrame"
+          referrerpolicy="no-referrer"
+          allow="fullscreen"
+          title="Wheel of Names Embedded"
+        ></iframe>
+      </div>
 
-    <div class="fsHelp">
-      Tip: Fullscreen button uses your browser’s Fullscreen API (Esc to exit).
-    </div>
+      <div class="fsHelp">
+        Tip: Fullscreen button uses your browser's Fullscreen API (Esc to exit).
+      </div>
 
-    <div class="row">
-      <span class="pill">Winner messages are read from <code>event.data.spinResult.text</code>.</span>
-    </div>
-  </section>
-</main>
+      <div class="row">
+        <span class="pill">Winner messages are read from <code>event.data.spinResult.text</code>.</span>
+      </div>
+    </section>
+  </main>
 
-<!-- Winner overlay -->
-<div class="backdrop" id="backdrop" role="dialog" aria-modal="true">
-  <div class="modal">
-    <h2>Winner</h2>
-    <div class="winner" id="winnerText">—</div>
-    <div class="actions">
-      <button id="modalCloseBtn">Close</button>
-      <button class="danger" id="modalRemoveBtn">Remove</button>
-      <button class="danger" id="modalRemoveAllBtn">Remove all</button>
+  <!-- Winner overlay -->
+  <div class="backdrop" id="backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>Winner</h2>
+      <div class="winner" id="winnerText">—</div>
+      <div class="actions">
+        <button id="modalCloseBtn">Close</button>
+        <button class="danger" id="modalRemoveBtn">Remove</button>
+        <button class="danger" id="modalRemoveAllBtn">Remove all</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ✅ LINK JS (put at bottom so elements exist) -->
-<script src="script.js"></script>
+  <!-- ✅ LINK JS (put at bottom so elements exist) -->
+  <script src="script.js"></script>
 </body>
 </html>
-
