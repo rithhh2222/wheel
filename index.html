@@ -8,6 +8,45 @@
   <!-- ✅ LINK CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
+  <!-- Mobile Drawer Button -->
+<button id="drawerBtn" class="drawerBtn" aria-label="Open panel">›</button>
+
+<!-- Left Drawer (mobile-style like your screenshot) -->
+<aside id="drawer" class="drawer" aria-label="Wheel panel">
+  <div class="drawerTop">
+    <button class="tab active" id="tabEntries">Entries <span class="badge" id="entriesCount">0</span></button>
+    <button class="tab" id="tabResults">Results <span class="badge" id="resultsCount">0</span></button>
+  </div>
+
+  <div class="drawerBody">
+    <div id="entriesTools" class="tools">
+      <button class="toolBtn" id="shuffleBtn2">🔀 Shuffle</button>
+      <button class="toolBtn" id="sortBtn2">⇅ Sort</button>
+
+      <div class="toolSplit">
+        <button class="toolBtn" id="addImageBtn" type="button">🖼️ Add image</button>
+        <button class="toolDrop" id="addImageDrop" type="button">▾</button>
+      </div>
+
+      <label class="adv">
+        <input type="checkbox" id="advancedToggle" />
+        Advanced
+      </label>
+    </div>
+
+    <textarea id="entries2" class="bigBox" placeholder="Type one entry per line"></textarea>
+
+    <div class="bottomRow">
+      <span class="beta">Beta</span>
+      <div class="toolSplit wide">
+        <button class="toolBtn primary" id="addWheelBtn" type="button">＋ Add wheel</button>
+        <button class="toolDrop primary" id="addWheelDrop" type="button">▾</button>
+      </div>
+    </div>
+
+    <div id="resultsPanel" class="results" style="display:none;"></div>
+  </div>
+</aside>
 
 <body>
 <header>
@@ -100,3 +139,4 @@ Dara</textarea>
 <script src="script.js"></script>
 </body>
 </html>
+
